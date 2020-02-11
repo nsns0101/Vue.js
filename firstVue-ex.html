@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Vue.js를 이용한 장바구니 </title>
+    <script src="https://unpkg.com/vue"></script> <!-- Vue.js 라이브러리 import-->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+</head>
+
+<body>
+    <div id="main">
+    </div>
+
+    <div id="test">
+        <header>
+            <h1 v-text='testmsg'>
+                <!-- 
+                    v-* : Directive(지시자),
+                    v-text : element의 텍스트 바인딩 Directive
+                 -->
+            </h1>
+        </header>
+        <article>
+            <h2>{{testmsg}} {{testmsg2}}</h2> <!-- 텍스트 보간법 : {{ property-name}} -->
+        </article>
+    </div>
+
+    <script>
+        const webStore = new Vue(       //Vue 인스턴스 생성
+            {       //Vue의 옵션객체
+                el: '#main',       // el : element     Vue 인스턴스(어플리케이션)의 적용할 DOM element를 지정
+                data: {
+                    msg: '메시지 잘 받아라',
+                },
+            }
+        );
+
+        const testStore = new Vue(
+            {
+                el: '#test',            //test라는 id를 가진 태그를 검색
+                data: {                 //test라는 id를 가진 태그의 데이터
+                    testmsg: '테스트 메시지',
+                    testmsg2: '테스트 메시지2'
+                },
+            }
+        );
+
+    </script>
+</body>
+
+</html>
