@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> 애완용품샵 </title>
+    <script src="https://unpkg.com/vue"></script> <!-- Vue.js 라이브러리 import-->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+</head>
+
+<body>
+    <div id="main">
+    </div>
+
+    <div id="app">
+        <header>
+            <h1 v-text='sitename'></h1>
+        </header>
+        <main>
+            <div class="row">
+                <div class="col-md-2 col-md-oggdry-1">
+                    <figure>
+                        <!-- v-bind : Directive 양방향 바인딩
+                            축약표현, src="product.image" -->
+                        <img v-bind:src="product.image" alt="">
+                    </figure>
+                </div>
+                <div class="col-md-6 col-md-offset-2 description">
+                    <h1 v-text="product.title"></h1>
+                    <!-- v-html : Directive, html을 표시하는 것 $().html()의 역할
+                        el.innerHTML : XSS공격 대비
+                        즉, text안에 html 태그를 쓰고싶을 때 쓰면 됨-->
+                    <p v-html="product.description"></p>
+
+                    <p class="price"></p>{{product.price | formatPrice}}</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        var LOG_DISPLAY = true;
+
+        const webStore = new Vue(
+            {
+                el: '#app',
+                data: {
+                    sitename: 'Vue.js를 이용한 애완용품샵',
+                    product: {
+                        id: 1001,
+                        title: '고양이 사료',
+                        description: '당신의 고양이를 위한 <em>거부할 수 없는</em> 유기농 2500원짜리 사료입니다.',
+                        price: 250000,
+                        image: 'assets/images/product-fullsize.png'
+                    },
+
+                },
+                filters: {
+                    formatPrice: (price) => {       //filter 옵션에 필터 함수 작성
+                        //price값을 전달받아 가격표시 형식으로 변환
+                        if (!parseInt(price)) {
+                            console.log("a");
+
+                            return "";
+                        }
+                        console.log("a");
+
+                        //달러.센트(100달러26센트 = 100.26)
+                        if (price > 99999) {
+                            //100000이면 1000.00
+                            var priceString = (price / 100).toFixed(2);
+                            //["0", "0", ".", "0", "0", "0", "1"]
+                            var priceArray = priceString.split("").reverse();
+                            var index = 3;
+                            while (priceArray.length > index + 3) {
+                                priceArray.splice(index + 3, 0, ",");
+                                index += 4;
+                            }
+                            return priceArray.reverse().join("") + "원";
+                        }
+                        else {
+                            return (price / 100).toFixed(2) + "원";
+                        }
+                    }
+                },
+                beforeCreated: function () {
+                    if (LOG_DISPLAY) {
+                        console.log("생성 전 이벤트");
+                    }
+                },
+
+                created: function () {
+                    if (LOG_DISPLAY) {
+                        console.log("생성 후 이벤트");
+                    }
+                },
+
+                beforeMounted: function () {
+                    if (LOG_DISPLAY) {
+                        console.log("마운트 전 이벤트");
+                    }
+                },
+
+                mounted: function () {
+                    if (LOG_DISPLAY) {
+                        console.log("마운트 후 이벤트");
+                    }
+                },
+
+                beforeUpdated: function () {
+                    if (LOG_DISPLAY) {
+                        console.log("업데이트 전 이벤트");
+                    }
+                },
+
+                updated: function () {
+                    if (LOG_DISPLAY) {
+                        console.log("업데이트 후 이벤트");
+                    }
+                },
+
+                beforeDestroy: function () {
+                    if (LOG_DISPLAY) {
+                        console.log("삭제 전 이벤트");
+                    }
+                },
+
+                destroy: function () {
+                    if (LOG_DISPLAY) {
+                        console.log("삭제 후 이벤트");
+                    }
+                },
+
+
+
+            }
+        );
+
+    </script>
+</body>
+
+</html>
