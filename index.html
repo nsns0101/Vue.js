@@ -72,77 +72,100 @@
                                     <h4><strong>정보를 입력하세요</strong></h4>
                                 </div>
                             </div>
+
+                            <!-- 이름 -->
                             <div class="form-group">
                                 <div class="col-md-6">
                                     <strong>이름:</strong>
-                                    <input v-model="order.firstName" class="form-control" />
+                                    <input v-model.trim="order.firstName" class="form-control" />
                                 </div>
                                 <div class="col-md-6">
                                     <strong>성:</strong>
-                                    <input v-model="order.lastName" class="form-control" />
+                                    <input v-model.trim="order.lastName" class="form-control" />
                                 </div>
                             </div>
+
+                            <!-- 주소 -->
                             <div class="form-group">
                                 <div class="col-md-12"><strong>주소:</strong></div>
                                 <div class="col-md-12">
-                                    <input v-model="order.address" class="form-control" />
+                                    <input v-model.trim="order.address" class="form-control" />
                                 </div>
                             </div>
+
+                            <!-- 구 -->
                             <div class="form-group">
-                                <div class="col-md-12"><strong>도시:</strong></div>
+                                <div class="col-md-12"><strong>구</strong></div>
                                 <div class="col-md-12">
-                                    <input v-model="order.city" class="form-control" />
+                                    <input v-model.trim="order.ku" class="form-control" type='text' />
                                 </div>
                             </div>
+
+                            <!-- 도시 -->
                             <div class="form-group">
                                 <div class="col-md-2">
-                                    <strong>구:</strong>
-                                    <select v-model="order.state" class="form-control">
-                                        <option disabled value="">구</option>
-                                        <option>수성구</option>
-                                        <option>동구</option>
-                                        <option>북구</option>
-                                        <option>중구</option>
-                                        <option>달성구</option>
-                                        <option>달성군</option>
+                                    <strong>도시:</strong>
+                                    <select v-model="order.city" class="form-control">
+                                        <option disabled value="">도시</option>
+                                        <!-- 
+                                            <option v-bind:value="cities.SL">{{cities.SL}}</option>
+                                            <option v-bind:value="cities.DG">{{cities.DG}}</option> 
+                                        -->
+                                        <!-- for-in문-->
+                                        <option v-for="(city, key) in cities" v-bind:key='key'>
+                                            {{city}}({{key}})
+                                        </option>
+
                                     </select>
                                 </div>
                             </div>
+
+                            <!-- 우편번호 -->
                             <div class="form-group">
                                 <div class="col-md-6 col-md-offset-4">
                                     <strong>우편번호:</strong>
-                                    <input v-model.number="order.zip" class="form-control" />
+                                    <input v-model.number="order.zip" class="form-control" type='number' />
                                 </div>
                             </div>
+
+                            <!-- 선물 여부 : check box-->
                             <div class="form-group">
                                 <div class="col-md-6 boxes">
-                                    <input type="checkbox" id="gift" value="true" v-model="order.gift">
+                                    <input type="checkbox" id="gift" value="true" v-bind:true-value="order.sendGift"
+                                        v-bind:false-value="order.dontsendGift" v-model="order.gift">
                                     <label for="gift">선물로 보내기?</label>
                                 </div>
                             </div>
+
+                            <!-- 받는 곳 : radio button -->
                             <div class="form-group">
                                 <div class="col-md-6 boxes">
-                                    <input type="radio" id="home" value="자택" v-model="order.method">
+                                    <input type="radio" id="home" value="자택" v-model="order.method"
+                                        v-bind:value='order.home'>
                                     <label for="home">자택</label>
-                                    <input type="radio" id="business" value="직장" v-model="order.method">
+                                    <input type="radio" id="business" value="직장" v-model="order.method"
+                                        v-bind:value='order.business'>
                                     <label for="business">직장</label>
                                 </div>
                             </div>
+
+                            <!-- 주문 버튼-->
                             <div class="form-group">
                                 <div class="col-md-6">
                                     <button type="submit" class="btn btn-primary submit"
                                         v-on:click="submitForm">주문하기</button>
                                 </div>
                             </div>
+
                             <!-- 위의 입력한 값들을 정리하여 보여주는 곳-->
                             <div class="col-md-12 verify">
                                 <pre>
                                     이름: {{order.firstName}}
                                     성: {{order.lastName}}
                                     주소: {{order.address}}
-                                    도시: {{order.city}}
+                                    구: {{order.ku}}
                                     우편번호: {{order.zip}}
-                                    구: {{order.state}}
+                                    도시: {{order.city}}
                                     배송지: {{order.method}}
                                     선물: {{order.gift}}
                                 </pre>
@@ -163,15 +186,26 @@
                 data: {     //초기 값 설정
                     sitename: 'Vue.js를 이용한 애완용품샵',
                     showProduct: true,
+                    cities: {
+                        SL: '서울',
+                        DG: '대구',
+                        BS: '부산',
+                        IC: '인천',
+                        GM: '구미',
+                    },
                     order: {
                         firstName: '',      //이름
                         lastName: '',       //성
                         address: '',        //주소
                         city: '',           //도시
                         zip: '',            //우편
-                        state: '',          //구
+                        ku: '',          //구
                         method: '자택',     //받는 곳
-                        gift: false,        //선물로 보내는지의 여부
+                        gift: '선물로 보내기',        //선물로 보내는지의 여부
+                        sendGift: '선물로 보내기',
+                        dontsendGift: '선물로 보내지 않기',
+                        home: '자택주소',
+                        business: '직장주소'
                     },
                     product: {
                         id: 1001,
@@ -198,7 +232,7 @@
                     addToCart: function () {
                         this.cart.push(this.product.id);
                     },
-                    //체크아웃(토클함수)
+                    //체크아웃(토글함수)
                     showCheckOut() {
                         //showProduct에 대한 값을 토글시킴
                         this.showProduct = this.showProduct ? false : true;
@@ -235,49 +269,49 @@
                 },
                 beforeCreated: function () {
                     if (LOG_DISPLAY) {
-                        // console.log("생성 전 이벤트");
+                        console.log("생성 전 이벤트");
                     }
                 },
 
                 created: function () {
                     if (LOG_DISPLAY) {
-                        // console.log("생성 후 이벤트");
+                        console.log("생성 후 이벤트");
                     }
                 },
 
                 beforeMounted: function () {
                     if (LOG_DISPLAY) {
-                        // console.log("마운트 전 이벤트");
+                        console.log("마운트 전 이벤트");
                     }
                 },
 
                 mounted: function () {
                     if (LOG_DISPLAY) {
-                        // console.log("마운트 후 이벤트");
+                        console.log("마운트 후 이벤트");
                     }
                 },
 
                 beforeUpdated: function () {
                     if (LOG_DISPLAY) {
-                        // console.log("업데이트 전 이벤트");
+                        console.log("업데이트 전 이벤트");
                     }
                 },
 
                 updated: function () {
                     if (LOG_DISPLAY) {
-                        // console.log("업데이트 후 이벤트");
+                        console.log("업데이트 후 이벤트");
                     }
                 },
 
                 beforeDestroy: function () {
                     if (LOG_DISPLAY) {
-                        // console.log("삭제 전 이벤트");
+                        console.log("삭제 전 이벤트");
                     }
                 },
 
                 destroy: function () {
                     if (LOG_DISPLAY) {
-                        // console.log("삭제 후 이벤트");
+                        console.log("삭제 후 이벤트");
                     }
                 },
 
