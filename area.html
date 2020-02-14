@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Vue.js를 이용한 장바구니 </title>
+    <script src="https://unpkg.com/vue"></script> <!-- Vue.js 라이브러리 import-->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+</head>
+
+<body>
+    <div id="main">
+    </div>
+
+    <div id="app">
+        <p>
+            <button @click='length++; area();'>세로 추가</button>
+            <button @click='width++; area();'>가로 추가</button>
+
+        </p>
+    </div>
+
+    <script>
+        const webStore = new Vue(       //Vue 인스턴스 생성
+            {
+                el: '#app',
+                data: {         //DB에서 가져온 것은 data에 넣을 것
+                    length: 5,
+                    width: 3,
+                    area: 0,
+                },
+                // methods: {
+                //     test: function () {
+                //         //계산결과 리턴
+                //         this.area = this.length * this.width;
+                //     }
+                // }
+                computed: {    // DB에서 가져온 데이터로 수정하여 처리할 데이터
+                    area: function () {
+                        //계산결과 리턴
+                        return this.length * this.width;
+                    }
+                },
+                //변수 변경 상황을 조사
+                watch: {
+                    length: function (newVal, oldVal) {
+                        //세로 값이 변경되면 호출
+                        console.log(`Old(length) : ${oldVal}+"\nNew : ${newVal}`);
+                    },
+                    width: function (newVal, oldVal) {
+                        console.log(`Old(width) : ${oldVal}+"\nNew : ${newVal}`);
+                    },
+                    area: function (newVal, oldVal) {
+                        console.log(`Old(area) : ${oldVal}+"\nNew : ${newVal}`);
+                    },
+                },
+
+                beforeUpdate: function () {
+                    console.log('데이터 변경 전');
+                },
+                updated: function () {
+                    console.log('데이터 변경 후');
+                }
+
+            }
+        );
+    </script>
+</body>
+
+</html>
