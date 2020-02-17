@@ -56,30 +56,28 @@
 
                                 <p class="price"></p>{{product.price | formatPrice}}</p>
                                 <!-- canAddToCart 함수 반환값이 true일 때-->
-                                <button class="btn btn-primary btn-lg" v-on:click='addToCart' v-if='canAddToCart'>
+                                <button class="btn btn-primary btn-lg" v-on:click='addToCart(product)'
+                                    v-if='canAddToCart(product)'>
                                     장바구니 담기
-                                </button>
-                                <!-- canAddToCart 함수 반환값이 false일 때-->
-                                <button class="btn btn-primary btn-lg" disabled='true' v-else>
-                                    더 이상 담을 수 없습니다
                                 </button>
 
                                 <!-- 담을 수 있는 상품의 수 표시 -->
-                                <span class="inventory-message" v-if="product.availableInventory - cartItemCount === 0">
+                                <span class="inventory-message"
+                                    v-if="product.availableInventory - cartCount(product.id) <= 0">
                                     품절!
                                 </span>
                                 <span class="inventory-message"
-                                    v-else-if="product.availableInventory - cartItemCount > 5">
-                                    {{product.availableInventory - cartItemCount}} 남았습니다!
+                                    v-else-if="product.availableInventory - cartCount(product.id) < 5">
+                                    {{product.availableInventory - cartCount(product.id)}} 남았습니다!
                                 </span>
                                 <span class="inventory-message" v-else>지금 구매하세요!
                                 </span>
                                 <div class="rating">
-                                    <span v-bind:class="{'rating-active': checkRating(number)}" v-for="number in 5">☆
+                                    <span v-bind:class="{'rating-active': checkRating(n, product)}" v-for="n in 5">☆
                                     </span>
                                 </div>
                             </div>
-                        </div>
+                        </div><!-- end of row -->
                         <hr />
                     </div>
                 </div>
@@ -229,35 +227,83 @@
                         business: '직장주소'
                     },
                     products: [],
+                    // products: [
+                    //     {
+                    //         id: 1001,
+                    //         title: '고양이 사료',
+                    //         description: '당신의 고양이를 위한 <em>거부할 수 없는</em> 유기농 2500원짜리 사료입니다.',
+                    //         price: 250000,
+                    //         image: 'assets/images/product-fullsize.png',
+                    //         availableInventory: 6,
+                    //         rating: 3
+                    //     },
+                    //     {
+                    //         id: 1001,
+                    //         title: '고양이 사료',
+                    //         description: '당신의 고양이를 위한 <em>거부할 수 없는</em> 유기농 2500원짜리 사료입니다.',
+                    //         price: 250000,
+                    //         image: 'assets/images/product-fullsize.png',
+                    //         availableInventory: 6
+                    //     }
+                    // ],
                     cart: [],       //장바구니
 
                 },
                 computed: {     //논리적 계산       , 종속 대상에 따라 저장(캐싱)됨
                     cartItemCount: function () {
+                        if (this.cart.length > 6) {
+                            return this.cart.length = this.cart.length - 1;;
+                        }
                         return this.cart.length || "";      //default값은 ""
                     },
-                    canAddToCart: function () {
-                        //product가 담을 수 있는 것 보다 커져버리면
-                        return this.product.availableInventory > this.cartItemCount;
+                    //정렬
+                    sortedProducts() {
+                        if (this.products.length > 0) {
+                            let productsArray = this.products.slice(0);
+                            function compare(a, b) {
+                                if (a.title.toLowerCase() < b.title.toLowerCase())
+                                    return -1;
+                                if (a.title.toLowerCase() > b.title.toLowerCase())
+                                    return 1;
+                                return 0;
+                            }
+                            return productsArray.sort(compare);
+                        }
                     }
                 },
                 methods: {
-                    //상품을 장바구니에 추가
-                    addToCart: function () {
-                        this.cart.push(this.product.id);
+                    canAddToCart: function (myProduct) {
+                        console.log(myProduct);
+                        //product가 담을 수 있는 것 보다 커져버리면
+                        console.log(myProduct.availableInventory);
+                        return myProduct.availableInventory > this.cartCount(myProduct.length);
                     },
+                    //상품을 장바구니에 추가
+                    addToCart: function (aProduct) {
+                        this.cart.push(aProduct.id);
+                    },
+                    cartCount(id) {
+                        let count = 0;
+                        for (var i = 0; i < this.cart.length; i++) {
+                            if (this.cart[i] === id) {
+                                count++;
+                            }
+
+                        }
+                        return count;
+                    }
+                    ,
                     //체크아웃(토글함수)
                     showCheckOut() {
-                        //showProduct에 대한 값을 토글시킴
                         this.showProduct = this.showProduct ? false : true;
                     },
                     //정보 입력후 제출
                     submitForm() {
                         alert('주문 완료!');
                     },
-                    checkRating(number) {
-                        return this.product.rating - number >= 0;
-                    }
+                    checkRating(n, myProduct) {
+                        return myProduct.rating - n >= 0;
+                    },
                 },
                 filters: {
                     formatPrice: (price) => {       //filter 옵션에 필터 함수 작성
@@ -291,17 +337,17 @@
                 },
 
                 created: function () {
-                    // if (LOG_DISPLAY) {
-                    //     console.log("생성 후 이벤트");
-                    // }
-                    // axios.get('./products.json')
-                    //     .then((response) => {
-                    //         this.products = response.data.products;
-                    //         console.log(this.products);
-                    //     })
-                    //     .catch((err) => {
-                    //         console.log(err);
-                    //     })
+                    if (LOG_DISPLAY) {
+                        console.log("생성 후 이벤트");
+                    }
+                    axios.get('./products.json')
+                        .then((response) => {
+                            this.products = response.data.products;
+                            console.log(this.products);
+                        })
+                        .catch((err) => {
+                            console.log(err);
+                        })
                 },
 
                 beforeMounted: function () {
