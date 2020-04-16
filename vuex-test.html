@@ -4,35 +4,50 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vuex/dist/vuex.min.js"></script>
 </head>
 <body>
     <div id="app">
         <h1>{{header}}</h1>
-        <h2>{{counter}}</h2>
+        <h2>{{welcome}}</h2>
+        <h3>{{counter}}</h3>
         <button @click="addCount">눌러보세요!</button>
     </div>
     
     <script>
         const store = new Vuex.Store({
             state: {
-                msg : "안녕",
+                msg : "HeLlo",
                 count : 0,
             },
             mutations: {
-                increment(state){
-                    state.count++;
+                //state는 기본옵션
+                increment(state, payload){
+                    const {addValue, header} = payload;
+                    console.log(typeof(addValue));
+                    state.count += addValue;
+                    //state.msg=header
                 }
             },
             getters: {
-
+                msg(state){
+                    return state.msg.toUpperCase();
+                },
+                count(state){
+                    return state.count++;
+                }
             },
-            actions: {
+            actions: {  //비동기적 호출 : axios 등 사용, setTimeout
+                increment(context, payload){
+                    setTimeout(function(){
+                        context.commit('increment',payload);
+                    },3000)
+                }
 
             }
         });
-        new Vuew({
+        new Vue({
             el:"#app",
             data(){
                 return {
@@ -41,17 +56,22 @@
             },
             computed : {
                 welcome(){
-                    return store.state.msg; //Vuex Store 객체 상태를 참조
+                    return store.getters.msg; //Vuex Store 객체 상태를 참조
                 },
                 counter(){
-                    return store.state.count;
+                    return store.getters.count;
                 }
             },
             methods: {
                 addCount(){
-                    state.commit('increment');
+                    //store.commit('increment',{addValue : 10, header : this.header});
                     //commit은 VueX Store객체의 뮤테이션 호출 함수(trigger)
                     //commit의 파라미터 : 뮤테이션명(뮤테이션의 함수명)
+
+                    store.dispatch('increment', {addValue : 10, header: this.header});
+                    //dispatch()는 Vuex Store 객체의 액션 호출 메서드
+                    //dispatch의 파라미터 : 액션명(액션의 함수명)
+                
                 }
             }
         })
