@@ -260,6 +260,7 @@
                     sortedProducts() {
                         if (this.products.length > 0) {
                             let productsArray = this.products.slice(0);
+                            //toLowerCase = 소문자로 변환
                             function compare(a, b) {
                                 if (a.title.toLowerCase() < b.title.toLowerCase())
                                     return -1;

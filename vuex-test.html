@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+</head>
+<body>
+    <div id="app">
+        <h1>{{header}}</h1>
+        <h2>{{counter}}</h2>
+        <button @click="addCount">눌러보세요!</button>
+    </div>
+    
+    <script>
+        const store = new Vuex.Store({
+            state: {
+                msg : "안녕",
+                count : 0,
+            },
+            mutations: {
+                increment(state){
+                    state.count++;
+                }
+            },
+            getters: {
+
+            },
+            actions: {
+
+            }
+        });
+        new Vuew({
+            el:"#app",
+            data(){
+                return {
+                    header: 'Vuex 예제',
+                };
+            },
+            computed : {
+                welcome(){
+                    return store.state.msg; //Vuex Store 객체 상태를 참조
+                },
+                counter(){
+                    return store.state.count;
+                }
+            },
+            methods: {
+                addCount(){
+                    state.commit('increment');
+                    //commit은 VueX Store객체의 뮤테이션 호출 함수(trigger)
+                    //commit의 파라미터 : 뮤테이션명(뮤테이션의 함수명)
+                }
+            }
+        })
+    </script>
+
+</body>
+</html>

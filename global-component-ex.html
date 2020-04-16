@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> </title>
+    <script src="https://unpkg.com/vue"></script> <!-- Vue.js 라이브러리 import-->
+    <!--axios 사용 -->
+    <script src="https://unpkg.com/axios/dist/axios.min.js" type='text/javascript'></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+</head>
+
+<body>
+    <div id="app">
+        <!-- 부모 -->
+        <my-component v-bind:text='msg'></my-component>
+        <h1>{{msg}}</h1>
+    </div>
+
+    <div id="app1">
+        <!-- 부모 -->
+        <my-component :test='msg'></my-component>
+        <!-- <h1>{{msg}}</h1> -->
+    </div>
+
+    <script>
+        Vue.component(
+            'MyComponent',
+            //component명으로 ok => myComponent, my-component, MyComponnent
+            //component명으로 no => my_component, mycomponent
+            {
+                template: "<div>이건 전역 컴포넌트야 <h1>부모로 부터 받은 데이터 : {{text}}</h1> </div>",
+                props: ['text']
+            }
+        );
+        const webstore = new Vue({
+            el: '#app',
+            data: {
+                msg: '확인용'
+            }
+        });
+        
+    </script>
+</body>
+
+</html>
