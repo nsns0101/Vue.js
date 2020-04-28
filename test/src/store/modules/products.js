@@ -1,12 +1,16 @@
 import Axios from "axios"
 
 const state = {
-
+    products:{},
+    session:firse
 }
 
 const mutations = {
     'SET_STORE'(state, products){
         state.products = products;
+    },
+    'SET_SESSION'(state, session){
+        state.SET_SESSION
     }
 }
 const actions = { //비동기 통신
@@ -19,7 +23,8 @@ const actions = { //비동기 통신
     }
 }
 const getters = {
-    products: state => state.products
+    products: state => state.products,
+    session: state => state.session,
 }
 
 export default {

@@ -5,6 +5,12 @@ import App from './App'
 import router from './router'
 import {store} from './store/store'
 
+import firebase from 'firebase';
+import './firebase';
+
+// import { rtdbPlugin, firestorePlugin} from 'vuefire';
+import rtdbPluginas as Vuefire from 'vuefire';
+
 // require
 Vue.config.productionTip = false
 
